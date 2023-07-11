@@ -5,7 +5,7 @@ const coll = db.collection("tasks")
 
 //get all tasks
 export async function getTasks(req,res){
-    const {uid}= req.params;
+    const { uid }= req.params;
     //get all tasks by user
     const tasks = await coll.where("uid", "==", uid).get()
     //aranges tasks in array
@@ -30,9 +30,10 @@ export async function addTasks(req,res){
 //update tasks
 
 export async function updateTask(req,res) {
+    const {uid } = req.params; 
     const{ done, id } = req.body;
 
-    if(!id) {
+    if(!uid) {
       res.status(401).send({success: false, message: "Not a valid request"})
       return;
     }
@@ -45,4 +46,20 @@ export async function updateTask(req,res) {
     await coll.doc(id).update(updates)
 
     getTasks(req, res)
+}
+
+//delete tasks
+
+export async function deleteTask(req,res){
+    const {uid } = req.params; 
+    const {id} = req.body;
+
+    if (!uid) {
+        res.status(401).send({success: false, message: "Not a valid request"})
+        return;
+    }
+
+    await coll.doc(id).delete();
+
+    getTasks(req,res)
 }
