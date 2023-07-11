@@ -3,6 +3,7 @@ import db from "./dbConnect.js"
 
 const coll = db.collection("tasks")
 
+//get all tasks
 export async function getTasks(req,res){
     const {uid}= req.params;
     //get all tasks by user
@@ -24,4 +25,24 @@ export async function addTasks(req,res){
     }
     await coll.add(newTask)
     getTasks(req,res);
+}
+
+//update tasks
+
+export async function updateTask(req,res) {
+    const{ done, id } = req.body;
+
+    if(!id) {
+      res.status(401).send({success: false, message: "Not a valid request"})
+      return;
+    }
+
+
+    const updates = {
+        done,
+        updatedAt: FieldValue.serverTimestamp()
+    }
+    await coll.doc(id).update(updates)
+
+    getTasks(req, res)
 }

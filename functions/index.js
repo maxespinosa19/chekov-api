@@ -11,4 +11,4 @@ app.use(express.json());
 app.get("/tasks/:uid", getTasks);
 app.post("/tasks/:uid", addTasks);
 
-export const api = onRequest(app) //exports cloud function
+export const api = onRequest({maxInstances: 10},app) //exports cloud function
